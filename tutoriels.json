@@ -2,19 +2,25 @@
   "tutoriels": [
     {
       "id": "simple-iron-farm-example",
-      "titre": "Simple Iron Farm (example)",
-      "image": "images/iron-farm.jpg",
-      "lien": "https://www.youtube.com/watch?v=REPLACE_WITH_YOUR_VIDEO_ID",
+      "titre": "small villager breeder",
+      "image": "images/simple-villager-breeder.png",
+      "lien": "https://www.youtube.com/watch?v=Gq6IAgCpFnY",
       "materiaux": [
-        { "nom": "Stone Bricks", "quantite": 1500 },
-        { "nom": "Glass", "quantite": 200 },
-        { "nom": "Hopper", "quantite": 4 },
-        { "nom": "Chest", "quantite": 2 },
-        { "nom": "Bed", "wiki": "White Bed", "quantite": 3 },
-        { "nom": "Oak Trapdoor", "quantite": 8 },
-        { "nom": "Rail", "quantite": 40 },
-        { "nom": "Water Bucket", "quantite": 2, "pile": 16 },
-        { "nom": "Lava Bucket", "quantite": 1, "pile": 1 }
+        { "nom": "Stone Bricks", "quantite": 94 },
+        { "nom": "Dispenser", "quantite": 1 },
+        { "nom": "Composter", "quantite": 2 },
+        { "nom": "Minecart", "quantite": 1, "pile": 1 },
+        { "nom": "Powered Rail", "quantite": 2 },
+        { "nom": "Rail", "quantite": 1 },
+        { "nom": "Bed", "quantite": 3, "pile": 1 },
+        { "nom": "Redstone Torch", "quantite": 1, "pile": 16 },
+        { "nom": "Lava Bucket", "quantite": 1, "pile": 1 },
+        {"non": "Button", "wiki": "stone Button", "quantite": "1"},
+        { "nom": "sign", "quantite": 1 },
+        { "nom": "Trapdoor", "quantite": 2 },
+        { "nom": "Water Bucket", "quantite": 4 },
+        { "nom": "Hoe", "quantite": 1 },
+        { "nom": "Carrot", "quantite": 36 }
       ]
     }
   ]
