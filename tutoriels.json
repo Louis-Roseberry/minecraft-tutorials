@@ -1,20 +1,20 @@
 {
   "tutoriels": [
     {
-      "id": "ferme-fer-exemple",
-      "titre": "Ferme à fer simple (exemple)",
-      "image": "images/ferme-fer.jpg",
-      "lien": "https://www.youtube.com/watch?v=REMPLACE_PAR_TON_ID",
+      "id": "simple-iron-farm-example",
+      "titre": "Simple Iron Farm (example)",
+      "image": "images/iron-farm.jpg",
+      "lien": "https://www.youtube.com/watch?v=REPLACE_WITH_YOUR_VIDEO_ID",
       "materiaux": [
-        { "nom": "Briques de pierre", "wiki": "Stone Bricks", "quantite": 1500 },
-        { "nom": "Verre", "wiki": "Glass", "quantite": 200 },
-        { "nom": "Trémie", "wiki": "Hopper", "quantite": 4 },
-        { "nom": "Coffre", "wiki": "Chest", "quantite": 2 },
-        { "nom": "Lit", "wiki": "White Bed", "quantite": 3 },
-        { "nom": "Trappe en chêne", "wiki": "Oak Trapdoor", "quantite": 8 },
-        { "nom": "Rail", "wiki": "Rail", "quantite": 40 },
-        { "nom": "Seau d'eau", "wiki": "Water Bucket", "quantite": 2, "pile": 16 },
-        { "nom": "Seau de lave", "wiki": "Lava Bucket", "quantite": 1, "pile": 1 }
+        { "nom": "Stone Bricks", "quantite": 1500 },
+        { "nom": "Glass", "quantite": 200 },
+        { "nom": "Hopper", "quantite": 4 },
+        { "nom": "Chest", "quantite": 2 },
+        { "nom": "Bed", "wiki": "White Bed", "quantite": 3 },
+        { "nom": "Oak Trapdoor", "quantite": 8 },
+        { "nom": "Rail", "quantite": 40 },
+        { "nom": "Water Bucket", "quantite": 2, "pile": 16 },
+        { "nom": "Lava Bucket", "quantite": 1, "pile": 1 }
       ]
     }
   ]
