@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tutoriels Minecraft</title>
+<title>Minecraft Tutorials</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
@@ -22,10 +22,13 @@
     --police-texte: "Barlow", system-ui, sans-serif;
   }
 
-  * { box-sizing: border-box; border-radius: 0; }
+  * { box-sizing: border-box; border-radius: 0; scrollbar-color: var(--vert-fonce) #111; }
 
+  html, body { height: 100%; }
   body {
     margin: 0;
+    display: flex;
+    flex-direction: column;
     background: var(--noir);
     color: var(--texte);
     font-family: var(--police-texte);
@@ -35,8 +38,9 @@
 
   a { color: inherit; }
 
-  /* En-tête */
+  /* Header */
   .entete {
+    flex: none;
     background: #141414;
     border-bottom: 4px solid var(--vert);
     padding: 14px 20px;
@@ -56,14 +60,30 @@
     box-shadow: inset -4px -4px 0 var(--vert-fonce), inset 4px 4px 0 var(--vert-clair);
   }
 
-  .conteneur { max-width: 1120px; margin: 0 auto; padding: 32px 20px 72px; }
+  /* The main area scrolls on the home screen; fixed-height pages scroll only their list */
+  #app {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .conteneur { width: 100%; max-width: 1120px; margin: 0 auto; padding: 32px 20px 72px; }
+  .conteneur.page-fixe {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    padding-bottom: 24px;
+  }
 
   h1, h2 { font-family: var(--police-titre); font-weight: 600; line-height: 1.2; }
   h1 { font-size: 2.2rem; margin: 0 0 6px; }
   h2 { font-size: 1.2rem; color: var(--vert); margin: 0 0 10px; }
   .sous { color: var(--discret); margin: 0 0 28px; }
 
-  /* Boutons */
+  /* Buttons */
   .btn {
     display: inline-block;
     padding: 12px 22px;
@@ -91,13 +111,13 @@
 
   .retour {
     display: inline-block;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     color: var(--discret);
     text-decoration: none;
   }
   .retour:hover { color: var(--vert); }
 
-  /* Grille de cartes */
+  /* Card grid */
   .grille {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
@@ -158,34 +178,48 @@
     .carte::after { opacity: 1; background: rgba(0, 0, 0, .25); }
   }
 
-  /* Écran d'un tutoriel */
+  /* Tutorial screen: image, name and buttons stay in place, only the list scrolls */
   .detail {
+    flex: 1;
+    min-height: 0;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    grid-template-rows: minmax(0, 1fr);
     gap: 36px;
-    align-items: start;
   }
-  .detail-img { aspect-ratio: 1; border: 2px solid var(--bord); overflow: hidden; }
-  .detail h1 { margin-bottom: 24px; }
-  .actions { display: flex; flex-wrap: wrap; gap: 14px; }
-  @media (max-width: 760px) { .detail { grid-template-columns: 1fr; gap: 24px; } }
+  .detail-gauche { display: flex; flex-direction: column; gap: 18px; min-height: 0; }
+  .detail-img { flex: 1; min-height: 120px; border: 2px solid var(--bord); overflow: hidden; }
+  .detail-gauche h1 { flex: none; margin: 0; font-size: 2rem; }
+  .actions { flex: none; display: flex; flex-wrap: wrap; gap: 14px; }
+  .detail-droite { display: flex; flex-direction: column; min-height: 0; }
+  .detail-droite h2 { flex: none; }
 
-  /* Listes de matériaux */
+  @media (max-width: 760px) {
+    .detail { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); gap: 18px; }
+    .detail-img { flex: none; height: 26dvh; min-height: 100px; }
+    .detail-gauche h1 { font-size: 1.5rem; }
+    .actions .btn { padding: 10px 16px; }
+    .conteneur { padding-left: 14px; padding-right: 14px; }
+  }
+
+  /* Material lists */
   .liste {
     list-style: none;
-    margin: 0 0 26px;
+    margin: 0;
     padding: 0;
     background: var(--carte);
     border: 2px solid var(--bord);
   }
-  .liste li, .liste .ligne {
+  .liste.defilante { flex: 1; min-height: 0; overflow-y: auto; }
+  .liste li { border-bottom: 2px solid var(--noir); }
+  .liste li:last-child { border-bottom: 0; }
+  .ligne {
     display: flex;
     align-items: center;
     gap: 14px;
+    width: 100%;
     padding: 9px 12px;
-    border-bottom: 2px solid var(--noir);
   }
-  .liste li:last-child { border-bottom: 0; }
   .icone {
     flex: none;
     display: grid;
@@ -205,19 +239,23 @@
   }
   .icone img.ok { opacity: 1; }
   .nom { flex: 1; min-width: 0; }
-  .quantites { text-align: right; }
+  .quantites { flex: none; margin-left: auto; text-align: right; }
   .qte { display: block; font-family: var(--police-titre); color: var(--vert); white-space: nowrap; }
   .repartition { display: block; color: var(--discret); font-size: .9rem; white-space: nowrap; }
+  .vide { padding: 14px 12px; color: var(--discret); }
   .casse { display: none; }
 
-  /* Liste à cocher */
-  .explication { color: var(--discret); max-width: 60ch; margin: 0 0 20px; }
-  .progression { margin: 0 0 22px; }
+  /* Checklist */
+  .checklist-haut { flex: none; }
+  .checklist-haut .sous { margin-bottom: 14px; }
+  .explication { color: var(--discret); max-width: 70ch; margin: 0 0 16px; }
+  .progression { margin: 0 0 18px; }
   .barre { height: 16px; background: var(--carte); border: 2px solid var(--bord); margin-top: 8px; }
   .barre i { display: block; height: 100%; width: 0; background: var(--vert); transition: width .2s; }
-  .ligne { position: relative; cursor: pointer; }
-  .ligne:hover { background: #242424; }
-  .ligne input { position: absolute; opacity: 0; }
+  .checklist-bas { flex: none; margin-top: 18px; }
+  label.ligne { position: relative; cursor: pointer; }
+  label.ligne:hover { background: #242424; }
+  label.ligne input { position: absolute; opacity: 0; }
   .case {
     flex: none;
     display: grid;
@@ -227,8 +265,8 @@
     background: #0f0f0f;
     border: 2px solid #5a5a5a;
   }
-  .ligne input:checked + .case { background: var(--vert); border-color: var(--vert); }
-  .ligne input:checked + .case::after {
+  label.ligne input:checked + .case { background: var(--vert); border-color: var(--vert); }
+  label.ligne input:checked + .case::after {
     content: "";
     width: 14px;
     height: 7px;
@@ -236,10 +274,31 @@
     border-bottom: 3px solid #000;
     transform: rotate(-45deg) translate(1px, -2px);
   }
-  .ligne input:focus-visible + .case { outline: 3px solid #fff; outline-offset: 2px; }
-  .ligne.coche .nom, .ligne.coche .quantites { opacity: .45; }
-  .ligne.coche .nom { text-decoration: line-through; }
+  label.ligne input:focus-visible + .case { outline: 3px solid #fff; outline-offset: 2px; }
+  label.ligne.coche .nom, label.ligne.coche .quantites { opacity: .45; }
+  label.ligne.coche .nom { text-decoration: line-through; }
   .liste .qte { font-size: 1.15rem; }
+
+  /* Completion popup */
+  .voile {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, .78);
+  }
+  .popup {
+    width: 100%;
+    max-width: 440px;
+    padding: 28px;
+    background: var(--carte);
+    border: 2px solid var(--vert);
+    box-shadow: 8px 8px 0 var(--vert-fonce);
+  }
+  .popup h2 { color: var(--texte); font-size: 1.6rem; margin-bottom: 10px; }
+  .popup p { margin: 0 0 22px; color: var(--discret); }
 
   /* Messages */
   .message {
@@ -261,7 +320,7 @@
 <body>
 
 <header class="entete">
-  <a class="logo" href="#/"><span class="cube"></span>Tutoriels Minecraft</a>
+  <a class="logo" href="#/"><span class="cube"></span>Minecraft Tutorials</a>
 </header>
 
 <main id="app"></main>
@@ -272,10 +331,10 @@
   const CLE_STOCKAGE = 'mc-tutoriels-coches';
 
   const app = document.getElementById('app');
-  const iconesWiki = new Map(); // nom wiki -> url de l'image (ou null si introuvable)
+  const iconesWiki = new Map(); // wiki name -> image url (or null if not found)
   let tutoriels = [];
 
-  /* ---------- Utilitaires ---------- */
+  /* ---------- Helpers ---------- */
 
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => (
     { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
@@ -285,10 +344,10 @@
     .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
   const urlSure = u => /^https?:\/\//i.test(u || '') ? u : '#';
-  const nombre = n => Number(n).toLocaleString('fr-CA');
+  const nombre = n => Number(n).toLocaleString('en-US');
   const nomWiki = m => m.wiki || m.nom;
 
-  // Convertit une quantité en sb / stacks / items
+  // Converts a quantity into shulker boxes / stacks / items
   function repartition(quantite, pile = PILE_DEFAUT) {
     const parSb = pile * STACKS_PAR_SB;
     const sb = Math.floor(quantite / parSb);
@@ -301,7 +360,7 @@
     return morceaux.join(', ') || '0';
   }
 
-  /* ---------- Cases cochées (gardées dans le navigateur) ---------- */
+  /* ---------- Checked boxes (saved in the browser) ---------- */
 
   function lireCoches() {
     try { return JSON.parse(localStorage.getItem(CLE_STOCKAGE)) || {}; }
@@ -309,10 +368,10 @@
   }
   function ecrireCoches(obj) {
     try { localStorage.setItem(CLE_STOCKAGE, JSON.stringify(obj)); }
-    catch { /* stockage indisponible : les cases ne seront pas mémorisées */ }
+    catch { /* storage unavailable: checks won't be remembered */ }
   }
 
-  /* ---------- Icônes du Minecraft wiki (API MediaWiki) ---------- */
+  /* ---------- Minecraft wiki icons (MediaWiki API) ---------- */
 
   async function chargerIcones() {
     const noms = [...new Set(tutoriels.flatMap(t =>
@@ -332,7 +391,7 @@
           iconesWiki.set(nom, p.imageinfo?.[0]?.url || null);
         });
       } catch {
-        // L'API ne répond pas : on tente le lien direct vers le fichier
+        // The API didn't answer: try the direct file link instead
         lot.forEach(n => iconesWiki.set(n,
           'https://minecraft.wiki/w/Special:FilePath/Invicon_' + encodeURIComponent(n.replace(/ /g, '_')) + '.png'));
       }
@@ -350,7 +409,7 @@
 
   const iconeHtml = m => `<span class="icone" data-wiki="${esc(nomWiki(m))}"${m.icone ? ` data-src="${esc(m.icone)}"` : ''}><img alt=""></span>`;
 
-  // Une image qui ne charge pas est masquée (le motif de la vignette reste visible)
+  // An image that fails to load is hidden (the tile pattern stays visible)
   document.addEventListener('error', e => {
     if (e.target.tagName === 'IMG') e.target.classList.add('casse');
   }, true);
@@ -358,20 +417,20 @@
     if (e.target.tagName === 'IMG') e.target.classList.add('ok');
   }, true);
 
-  /* ---------- Écrans ---------- */
+  /* ---------- Screens ---------- */
 
   function vueAccueil() {
     const n = tutoriels.length;
     app.innerHTML = `
       <section class="conteneur">
-        <h1>Tutoriels</h1>
-        <p class="sous">${n} ${n > 1 ? 'tutoriels disponibles' : 'tutoriel disponible'}</p>
+        <h1>Tutorials</h1>
+        <p class="sous">${n} ${n === 1 ? 'tutorial' : 'tutorials'} available</p>
         <div class="grille">
           ${tutoriels.map(t => `
             <a class="carte" href="#/tuto/${encodeURIComponent(t.id)}">
               <div class="vignette">${t.image ? `<img src="${esc(t.image)}" alt="">` : ''}</div>
               <div class="carte-nom">${esc(t.titre)}</div>
-              <span class="btn carte-btn">Commencer</span>
+              <span class="btn carte-btn">Start</span>
             </a>`).join('')}
         </div>
       </section>`;
@@ -382,28 +441,32 @@
       const pile = m.pile || PILE_DEFAUT;
       return `
         <li>
-          ${iconeHtml(m)}
-          <span class="nom">${esc(m.nom)}</span>
-          <span class="quantites">
-            <span class="qte">×${nombre(m.quantite)}</span>
-            ${m.quantite >= pile ? `<span class="repartition">${repartition(m.quantite, pile)}</span>` : ''}
-          </span>
+          <div class="ligne">
+            ${iconeHtml(m)}
+            <span class="nom">${esc(m.nom)}</span>
+            <span class="quantites">
+              <span class="qte">×${nombre(m.quantite)}</span>
+              ${m.quantite >= pile ? `<span class="repartition">${repartition(m.quantite, pile)}</span>` : ''}
+            </span>
+          </div>
         </li>`;
     }).join('');
 
     app.innerHTML = `
-      <section class="conteneur">
-        <a class="retour" href="#/">← Retour aux tutoriels</a>
+      <section class="conteneur page-fixe">
+        <a class="retour" href="#/">← Back to tutorials</a>
         <div class="detail">
-          <div class="detail-img vignette">${t.image ? `<img src="${esc(t.image)}" alt="${esc(t.titre)}">` : ''}</div>
-          <div>
+          <div class="detail-gauche">
+            <div class="detail-img vignette">${t.image ? `<img src="${esc(t.image)}" alt="${esc(t.titre)}">` : ''}</div>
             <h1>${esc(t.titre)}</h1>
-            <h2>Matériel</h2>
-            <ul class="liste">${lignes || '<li>Aucun matériel indiqué.</li>'}</ul>
             <div class="actions">
-              <a class="btn" href="${esc(urlSure(t.lien))}" target="_blank" rel="noopener">Voir sur YouTube</a>
-              <a class="btn secondaire" href="#/materiaux/${encodeURIComponent(t.id)}">Liste à cocher</a>
+              <a class="btn" href="${esc(urlSure(t.lien))}" target="_blank" rel="noopener">Watch on YouTube</a>
+              <a class="btn secondaire" href="#/materiaux/${encodeURIComponent(t.id)}">Checklist</a>
             </div>
+          </div>
+          <div class="detail-droite">
+            <h2>Materials</h2>
+            <ul class="liste defilante">${lignes || '<li class="vide">No materials listed.</li>'}</ul>
           </div>
         </div>
       </section>`;
@@ -423,24 +486,28 @@
             <span class="nom">${esc(m.nom)}</span>
             <span class="quantites">
               <span class="qte">${repartition(m.quantite, pile)}</span>
-              <span class="repartition">${nombre(m.quantite)} au total</span>
+              <span class="repartition">${nombre(m.quantite)} total</span>
             </span>
           </label>
         </li>`;
     }).join('');
 
     app.innerHTML = `
-      <section class="conteneur" data-tuto="${esc(t.id)}">
-        <a class="retour" href="#/tuto/${encodeURIComponent(t.id)}">← Retour au tutoriel</a>
-        <h1>Liste de matériaux</h1>
-        <p class="sous">${esc(t.titre)}</p>
-        <p class="explication">1 stack = 64 items (16 ou 1 pour certains objets) et 1 sb (shulker box) = 27 stacks. Coche chaque matériau au fur et à mesure que tu le rassembles.</p>
-        <div class="progression">
-          <span class="progression-texte"></span>
-          <div class="barre"><i></i></div>
+      <section class="conteneur page-fixe" data-tuto="${esc(t.id)}">
+        <div class="checklist-haut">
+          <a class="retour" href="#/tuto/${encodeURIComponent(t.id)}">← Back to tutorial</a>
+          <h1>Checklist</h1>
+          <p class="sous">${esc(t.titre)}</p>
+          <p class="explication">1 stack = 64 items (16 or 1 for some items) and 1 sb (shulker box) = 27 stacks. Check each material off as you gather it.</p>
+          <div class="progression">
+            <span class="progression-texte"></span>
+            <div class="barre"><i></i></div>
+          </div>
         </div>
-        <ul class="liste">${lignes || '<li>Aucun matériel indiqué.</li>'}</ul>
-        <button class="btn secondaire" id="tout-decocher" type="button">Tout décocher</button>
+        <ul class="liste defilante">${lignes || '<li class="vide">No materials listed.</li>'}</ul>
+        <div class="checklist-bas">
+          <button class="btn secondaire" id="tout-decocher" type="button">Uncheck all</button>
+        </div>
       </section>`;
 
     majProgression(app.querySelector('[data-tuto]'));
@@ -458,8 +525,8 @@
     app.innerHTML = `
       <section class="conteneur">
         <div class="message">
-          <p>Ce tutoriel n'existe pas ou a été retiré.</p>
-          <p><a href="#/">Retourner à la liste des tutoriels</a></p>
+          <p>This tutorial doesn't exist or has been removed.</p>
+          <p><a href="#/">Back to the tutorial list</a></p>
         </div>
       </section>`;
   }
@@ -468,20 +535,47 @@
     app.innerHTML = `
       <section class="conteneur">
         <div class="message">
-          <p>Impossible de charger <code>tutoriels.json</code>.</p>
-          <p>Si tu as ouvert <code>index.html</code> directement depuis ton ordinateur, le navigateur bloque la lecture du fichier JSON. Lance un petit serveur local dans le dossier du site (par exemple <code>python -m http.server</code>, puis ouvre <code>http://localhost:8000</code>), ou mets le site en ligne.</p>
-          <p>Vérifie aussi que le fichier JSON ne contient pas d'erreur de syntaxe (virgule oubliée ou en trop).</p>
+          <p>Couldn't load <code>tutoriels.json</code>.</p>
+          <p>If you opened <code>index.html</code> directly from your computer, the browser blocks reading the JSON file. Start a small local server in the site folder (for example <code>python -m http.server</code>, then open <code>http://localhost:8000</code>), or put the site online.</p>
+          <p>Also check that the JSON file has no syntax error (a missing or extra comma).</p>
         </div>
       </section>`;
   }
+
+  /* ---------- Progress and completion popup ---------- */
 
   function majProgression(conteneur) {
     const cases = [...conteneur.querySelectorAll('input[data-nom]')];
     const n = cases.filter(c => c.checked).length;
     conteneur.querySelector('.progression-texte').textContent =
-      `${n} sur ${cases.length} ${cases.length > 1 ? 'matériaux réunis' : 'matériau réuni'}`;
+      `${n} of ${cases.length} ${cases.length === 1 ? 'material' : 'materials'} collected`;
     conteneur.querySelector('.barre i').style.width = (cases.length ? (n / cases.length) * 100 : 0) + '%';
+    return { n, total: cases.length };
   }
+
+  function fermerPopup() {
+    document.getElementById('popup')?.remove();
+  }
+
+  function ouvrirPopup(t) {
+    fermerPopup();
+    const voile = document.createElement('div');
+    voile.className = 'voile';
+    voile.id = 'popup';
+    voile.innerHTML = `
+      <div class="popup" role="dialog" aria-modal="true" aria-labelledby="popup-titre">
+        <h2 id="popup-titre">All materials collected</h2>
+        <p>You have everything you need for ${esc(t.titre)}.</p>
+        <a class="btn" id="popup-suivant" href="#/tuto/${encodeURIComponent(t.id)}">Next</a>
+      </div>`;
+    document.body.appendChild(voile);
+    voile.addEventListener('click', e => {
+      if (e.target === voile || e.target.id === 'popup-suivant') fermerPopup();
+    });
+    document.getElementById('popup-suivant').focus();
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') fermerPopup(); });
 
   app.addEventListener('change', e => {
     const c = e.target;
@@ -494,12 +588,16 @@
     tous[id] = actuel;
     ecrireCoches(tous);
     c.closest('label').classList.toggle('coche', c.checked);
-    majProgression(conteneur);
+    const { n, total } = majProgression(conteneur);
+    if (c.checked && total > 0 && n === total) {
+      ouvrirPopup(tutoriels.find(x => x.id === id));
+    }
   });
 
   /* ---------- Navigation ---------- */
 
   function route() {
+    fermerPopup();
     const [, page, idBrut] = location.hash.split('/');
     const id = idBrut ? decodeURIComponent(idBrut) : '';
     const t = tutoriels.find(x => x.id === id);
@@ -510,10 +608,10 @@
     else vueAccueil();
 
     appliquerIcones();
-    window.scrollTo(0, 0);
+    app.scrollTo(0, 0);
   }
 
-  /* ---------- Démarrage ---------- */
+  /* ---------- Start ---------- */
 
   async function demarrer() {
     try {
