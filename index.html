@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tutoriels Minecraft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Pixelify+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --noir: #000;
+    --carte: #1c1c1c;
+    --gris: #2a2a2a;
+    --bord: #3b3b3b;
+    --vert: #5fbf3b;
+    --vert-fonce: #3a8a22;
+    --vert-clair: #8fe06b;
+    --texte: #ececec;
+    --discret: #9b9b9b;
+    --police-titre: "Pixelify Sans", "Courier New", monospace;
+    --police-texte: "Barlow", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; border-radius: 0; }
+
+  body {
+    margin: 0;
+    background: var(--noir);
+    color: var(--texte);
+    font-family: var(--police-texte);
+    font-size: 1.05rem;
+    line-height: 1.5;
+  }
+
+  a { color: inherit; }
+
+  /* En-tête */
+  .entete {
+    background: #141414;
+    border-bottom: 4px solid var(--vert);
+    padding: 14px 20px;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--police-titre);
+    font-size: 1.4rem;
+    text-decoration: none;
+  }
+  .cube {
+    width: 24px;
+    height: 24px;
+    background: var(--vert);
+    box-shadow: inset -4px -4px 0 var(--vert-fonce), inset 4px 4px 0 var(--vert-clair);
+  }
+
+  .conteneur { max-width: 1120px; margin: 0 auto; padding: 32px 20px 72px; }
+
+  h1, h2 { font-family: var(--police-titre); font-weight: 600; line-height: 1.2; }
+  h1 { font-size: 2.2rem; margin: 0 0 6px; }
+  h2 { font-size: 1.2rem; color: var(--vert); margin: 0 0 10px; }
+  .sous { color: var(--discret); margin: 0 0 28px; }
+
+  /* Boutons */
+  .btn {
+    display: inline-block;
+    padding: 12px 22px;
+    background: var(--vert);
+    border: 2px solid var(--noir);
+    color: #000;
+    font-family: var(--police-titre);
+    font-size: 1.05rem;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: inset -3px -3px 0 var(--vert-fonce), inset 3px 3px 0 var(--vert-clair);
+  }
+  .btn:hover { background: #70d04b; }
+  .btn:active { box-shadow: inset 3px 3px 0 var(--vert-fonce), inset -3px -3px 0 var(--vert-clair); }
+  .btn.secondaire {
+    background: var(--gris);
+    color: var(--texte);
+    box-shadow: inset -3px -3px 0 #141414, inset 3px 3px 0 #4d4d4d;
+  }
+  .btn.secondaire:hover { background: #333; outline: 2px solid var(--vert); }
+  .btn:focus-visible, .carte:focus-visible, .retour:focus-visible {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+  }
+
+  .retour {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--discret);
+    text-decoration: none;
+  }
+  .retour:hover { color: var(--vert); }
+
+  /* Grille de cartes */
+  .grille {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 24px;
+  }
+  .vignette {
+    background: conic-gradient(#202020 25%, #292929 0 50%, #202020 0 75%, #292929 0) 0 0 / 32px 32px;
+  }
+  .vignette img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+  .carte {
+    position: relative;
+    display: block;
+    aspect-ratio: 1;
+    border: 2px solid var(--bord);
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform .15s, border-color .15s, box-shadow .15s;
+  }
+  .carte .vignette { position: absolute; inset: 0; }
+  .carte::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  .carte-nom {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    z-index: 1;
+    padding: 36px 12px 12px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, .92));
+    font-family: var(--police-titre);
+    font-size: 1.1rem;
+    line-height: 1.25;
+  }
+  .carte-btn {
+    position: absolute;
+    left: 50%; top: 42%;
+    z-index: 2;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .15s;
+  }
+  .carte:hover, .carte:focus-visible {
+    transform: scale(1.07);
+    z-index: 5;
+    border-color: var(--vert);
+    box-shadow: 6px 6px 0 var(--vert-fonce);
+  }
+  .carte:hover::after, .carte:focus-visible::after { opacity: 1; }
+  .carte:hover .carte-btn, .carte:focus-visible .carte-btn { opacity: 1; }
+  @media (hover: none) {
+    .carte-btn { opacity: 1; top: 40%; }
+    .carte::after { opacity: 1; background: rgba(0, 0, 0, .25); }
+  }
+
+  /* Écran d'un tutoriel */
+  .detail {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 36px;
+    align-items: start;
+  }
+  .detail-img { aspect-ratio: 1; border: 2px solid var(--bord); overflow: hidden; }
+  .detail h1 { margin-bottom: 24px; }
+  .actions { display: flex; flex-wrap: wrap; gap: 14px; }
+  @media (max-width: 760px) { .detail { grid-template-columns: 1fr; gap: 24px; } }
+
+  /* Listes de matériaux */
+  .liste {
+    list-style: none;
+    margin: 0 0 26px;
+    padding: 0;
+    background: var(--carte);
+    border: 2px solid var(--bord);
+  }
+  .liste li, .liste .ligne {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 9px 12px;
+    border-bottom: 2px solid var(--noir);
+  }
+  .liste li:last-child { border-bottom: 0; }
+  .icone {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    background: #2d2d2d;
+    border: 3px solid;
+    border-color: #0f0f0f #5a5a5a #5a5a5a #0f0f0f;
+  }
+  .icone img {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .icone img.ok { opacity: 1; }
+  .nom { flex: 1; min-width: 0; }
+  .quantites { text-align: right; }
+  .qte { display: block; font-family: var(--police-titre); color: var(--vert); white-space: nowrap; }
+  .repartition { display: block; color: var(--discret); font-size: .9rem; white-space: nowrap; }
+  .casse { display: none; }
+
+  /* Liste à cocher */
+  .explication { color: var(--discret); max-width: 60ch; margin: 0 0 20px; }
+  .progression { margin: 0 0 22px; }
+  .barre { height: 16px; background: var(--carte); border: 2px solid var(--bord); margin-top: 8px; }
+  .barre i { display: block; height: 100%; width: 0; background: var(--vert); transition: width .2s; }
+  .ligne { position: relative; cursor: pointer; }
+  .ligne:hover { background: #242424; }
+  .ligne input { position: absolute; opacity: 0; }
+  .case {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    background: #0f0f0f;
+    border: 2px solid #5a5a5a;
+  }
+  .ligne input:checked + .case { background: var(--vert); border-color: var(--vert); }
+  .ligne input:checked + .case::after {
+    content: "";
+    width: 14px;
+    height: 7px;
+    border-left: 3px solid #000;
+    border-bottom: 3px solid #000;
+    transform: rotate(-45deg) translate(1px, -2px);
+  }
+  .ligne input:focus-visible + .case { outline: 3px solid #fff; outline-offset: 2px; }
+  .ligne.coche .nom, .ligne.coche .quantites { opacity: .45; }
+  .ligne.coche .nom { text-decoration: line-through; }
+  .liste .qte { font-size: 1.15rem; }
+
+  /* Messages */
+  .message {
+    background: var(--carte);
+    border: 2px solid var(--bord);
+    border-left: 8px solid var(--vert);
+    padding: 18px 20px;
+    max-width: 70ch;
+  }
+  .message p { margin: 0 0 10px; }
+  .message p:last-child { margin: 0; }
+  .message code { background: #000; padding: 2px 6px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="entete">
+  <a class="logo" href="#/"><span class="cube"></span>Tutoriels Minecraft</a>
+</header>
+
+<main id="app"></main>
+
+<script>
+  const STACKS_PAR_SB = 27;
+  const PILE_DEFAUT = 64;
+  const CLE_STOCKAGE = 'mc-tutoriels-coches';
+
+  const app = document.getElementById('app');
+  const iconesWiki = new Map(); // nom wiki -> url de l'image (ou null si introuvable)
+  let tutoriels = [];
+
+  /* ---------- Utilitaires ---------- */
+
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+
+  const slug = s => String(s).toLowerCase().normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+  const urlSure = u => /^https?:\/\//i.test(u || '') ? u : '#';
+  const nombre = n => Number(n).toLocaleString('fr-CA');
+  const nomWiki = m => m.wiki || m.nom;
+
+  // Convertit une quantité en sb / stacks / items
+  function repartition(quantite, pile = PILE_DEFAUT) {
+    const parSb = pile * STACKS_PAR_SB;
+    const sb = Math.floor(quantite / parSb);
+    const stacks = Math.floor((quantite % parSb) / pile);
+    const items = quantite % pile;
+    const morceaux = [];
+    if (sb) morceaux.push(`${sb} sb`);
+    if (stacks) morceaux.push(`${stacks} ${stacks > 1 ? 'stacks' : 'stack'}`);
+    if (items) morceaux.push(`${items} ${items > 1 ? 'items' : 'item'}`);
+    return morceaux.join(', ') || '0';
+  }
+
+  /* ---------- Cases cochées (gardées dans le navigateur) ---------- */
+
+  function lireCoches() {
+    try { return JSON.parse(localStorage.getItem(CLE_STOCKAGE)) || {}; }
+    catch { return {}; }
+  }
+  function ecrireCoches(obj) {
+    try { localStorage.setItem(CLE_STOCKAGE, JSON.stringify(obj)); }
+    catch { /* stockage indisponible : les cases ne seront pas mémorisées */ }
+  }
+
+  /* ---------- Icônes du Minecraft wiki (API MediaWiki) ---------- */
+
+  async function chargerIcones() {
+    const noms = [...new Set(tutoriels.flatMap(t =>
+      t.materiaux.filter(m => !m.icone).map(nomWiki)
+    ))];
+
+    for (let i = 0; i < noms.length; i += 40) {
+      const lot = noms.slice(i, i + 40);
+      const titres = lot.map(n => `File:Invicon ${n}.png`).join('|');
+      const url = 'https://minecraft.wiki/api.php?action=query&format=json&formatversion=2'
+        + '&origin=*&prop=imageinfo&iiprop=url&titles=' + encodeURIComponent(titres);
+      try {
+        const reponse = await fetch(url);
+        const donnees = await reponse.json();
+        (donnees.query?.pages || []).forEach(p => {
+          const nom = p.title.replace(/^File:Invicon /, '').replace(/\.png$/, '');
+          iconesWiki.set(nom, p.imageinfo?.[0]?.url || null);
+        });
+      } catch {
+        // L'API ne répond pas : on tente le lien direct vers le fichier
+        lot.forEach(n => iconesWiki.set(n,
+          'https://minecraft.wiki/w/Special:FilePath/Invicon_' + encodeURIComponent(n.replace(/ /g, '_')) + '.png'));
+      }
+    }
+    appliquerIcones();
+  }
+
+  function appliquerIcones() {
+    app.querySelectorAll('.icone').forEach(el => {
+      const img = el.querySelector('img');
+      const url = el.dataset.src || iconesWiki.get(el.dataset.wiki);
+      if (url && img.getAttribute('src') !== url) img.src = url;
+    });
+  }
+
+  const iconeHtml = m => `<span class="icone" data-wiki="${esc(nomWiki(m))}"${m.icone ? ` data-src="${esc(m.icone)}"` : ''}><img alt=""></span>`;
+
+  // Une image qui ne charge pas est masquée (le motif de la vignette reste visible)
+  document.addEventListener('error', e => {
+    if (e.target.tagName === 'IMG') e.target.classList.add('casse');
+  }, true);
+  document.addEventListener('load', e => {
+    if (e.target.tagName === 'IMG') e.target.classList.add('ok');
+  }, true);
+
+  /* ---------- Écrans ---------- */
+
+  function vueAccueil() {
+    const n = tutoriels.length;
+    app.innerHTML = `
+      <section class="conteneur">
+        <h1>Tutoriels</h1>
+        <p class="sous">${n} ${n > 1 ? 'tutoriels disponibles' : 'tutoriel disponible'}</p>
+        <div class="grille">
+          ${tutoriels.map(t => `
+            <a class="carte" href="#/tuto/${encodeURIComponent(t.id)}">
+              <div class="vignette">${t.image ? `<img src="${esc(t.image)}" alt="">` : ''}</div>
+              <div class="carte-nom">${esc(t.titre)}</div>
+              <span class="btn carte-btn">Commencer</span>
+            </a>`).join('')}
+        </div>
+      </section>`;
+  }
+
+  function vueDetail(t) {
+    const lignes = t.materiaux.map(m => {
+      const pile = m.pile || PILE_DEFAUT;
+      return `
+        <li>
+          ${iconeHtml(m)}
+          <span class="nom">${esc(m.nom)}</span>
+          <span class="quantites">
+            <span class="qte">×${nombre(m.quantite)}</span>
+            ${m.quantite >= pile ? `<span class="repartition">${repartition(m.quantite, pile)}</span>` : ''}
+          </span>
+        </li>`;
+    }).join('');
+
+    app.innerHTML = `
+      <section class="conteneur">
+        <a class="retour" href="#/">← Retour aux tutoriels</a>
+        <div class="detail">
+          <div class="detail-img vignette">${t.image ? `<img src="${esc(t.image)}" alt="${esc(t.titre)}">` : ''}</div>
+          <div>
+            <h1>${esc(t.titre)}</h1>
+            <h2>Matériel</h2>
+            <ul class="liste">${lignes || '<li>Aucun matériel indiqué.</li>'}</ul>
+            <div class="actions">
+              <a class="btn" href="${esc(urlSure(t.lien))}" target="_blank" rel="noopener">Voir sur YouTube</a>
+              <a class="btn secondaire" href="#/materiaux/${encodeURIComponent(t.id)}">Liste à cocher</a>
+            </div>
+          </div>
+        </div>
+      </section>`;
+  }
+
+  function vueMateriaux(t) {
+    const coches = lireCoches()[t.id] || {};
+    const lignes = t.materiaux.map(m => {
+      const pile = m.pile || PILE_DEFAUT;
+      const coche = !!coches[m.nom];
+      return `
+        <li>
+          <label class="ligne${coche ? ' coche' : ''}">
+            <input type="checkbox" data-nom="${esc(m.nom)}"${coche ? ' checked' : ''}>
+            <span class="case"></span>
+            ${iconeHtml(m)}
+            <span class="nom">${esc(m.nom)}</span>
+            <span class="quantites">
+              <span class="qte">${repartition(m.quantite, pile)}</span>
+              <span class="repartition">${nombre(m.quantite)} au total</span>
+            </span>
+          </label>
+        </li>`;
+    }).join('');
+
+    app.innerHTML = `
+      <section class="conteneur" data-tuto="${esc(t.id)}">
+        <a class="retour" href="#/tuto/${encodeURIComponent(t.id)}">← Retour au tutoriel</a>
+        <h1>Liste de matériaux</h1>
+        <p class="sous">${esc(t.titre)}</p>
+        <p class="explication">1 stack = 64 items (16 ou 1 pour certains objets) et 1 sb (shulker box) = 27 stacks. Coche chaque matériau au fur et à mesure que tu le rassembles.</p>
+        <div class="progression">
+          <span class="progression-texte"></span>
+          <div class="barre"><i></i></div>
+        </div>
+        <ul class="liste">${lignes || '<li>Aucun matériel indiqué.</li>'}</ul>
+        <button class="btn secondaire" id="tout-decocher" type="button">Tout décocher</button>
+      </section>`;
+
+    majProgression(app.querySelector('[data-tuto]'));
+
+    document.getElementById('tout-decocher').addEventListener('click', () => {
+      const tous = lireCoches();
+      delete tous[t.id];
+      ecrireCoches(tous);
+      vueMateriaux(t);
+      appliquerIcones();
+    });
+  }
+
+  function vueIntrouvable() {
+    app.innerHTML = `
+      <section class="conteneur">
+        <div class="message">
+          <p>Ce tutoriel n'existe pas ou a été retiré.</p>
+          <p><a href="#/">Retourner à la liste des tutoriels</a></p>
+        </div>
+      </section>`;
+  }
+
+  function vueErreur() {
+    app.innerHTML = `
+      <section class="conteneur">
+        <div class="message">
+          <p>Impossible de charger <code>tutoriels.json</code>.</p>
+          <p>Si tu as ouvert <code>index.html</code> directement depuis ton ordinateur, le navigateur bloque la lecture du fichier JSON. Lance un petit serveur local dans le dossier du site (par exemple <code>python -m http.server</code>, puis ouvre <code>http://localhost:8000</code>), ou mets le site en ligne.</p>
+          <p>Vérifie aussi que le fichier JSON ne contient pas d'erreur de syntaxe (virgule oubliée ou en trop).</p>
+        </div>
+      </section>`;
+  }
+
+  function majProgression(conteneur) {
+    const cases = [...conteneur.querySelectorAll('input[data-nom]')];
+    const n = cases.filter(c => c.checked).length;
+    conteneur.querySelector('.progression-texte').textContent =
+      `${n} sur ${cases.length} ${cases.length > 1 ? 'matériaux réunis' : 'matériau réuni'}`;
+    conteneur.querySelector('.barre i').style.width = (cases.length ? (n / cases.length) * 100 : 0) + '%';
+  }
+
+  app.addEventListener('change', e => {
+    const c = e.target;
+    if (!c.matches('input[data-nom]')) return;
+    const conteneur = c.closest('[data-tuto]');
+    const id = conteneur.dataset.tuto;
+    const tous = lireCoches();
+    const actuel = tous[id] || {};
+    if (c.checked) actuel[c.dataset.nom] = true; else delete actuel[c.dataset.nom];
+    tous[id] = actuel;
+    ecrireCoches(tous);
+    c.closest('label').classList.toggle('coche', c.checked);
+    majProgression(conteneur);
+  });
+
+  /* ---------- Navigation ---------- */
+
+  function route() {
+    const [, page, idBrut] = location.hash.split('/');
+    const id = idBrut ? decodeURIComponent(idBrut) : '';
+    const t = tutoriels.find(x => x.id === id);
+
+    if (page === 'tuto' && t) vueDetail(t);
+    else if (page === 'materiaux' && t) vueMateriaux(t);
+    else if (page === 'tuto' || page === 'materiaux') vueIntrouvable();
+    else vueAccueil();
+
+    appliquerIcones();
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- Démarrage ---------- */
+
+  async function demarrer() {
+    try {
+      const reponse = await fetch('tutoriels.json');
+      if (!reponse.ok) throw new Error(reponse.status);
+      const donnees = await reponse.json();
+      const liste = Array.isArray(donnees) ? donnees : donnees.tutoriels;
+      tutoriels = liste.map(t => ({
+        ...t,
+        id: t.id || slug(t.titre),
+        materiaux: t.materiaux || []
+      }));
+    } catch (erreur) {
+      vueErreur();
+      return;
+    }
+    window.addEventListener('hashchange', route);
+    route();
+    chargerIcones();
+  }
+
+  demarrer();
+</script>
+</body>
+</html>
